@@ -21,3 +21,26 @@ def teardown_db(exception):
     the current SQLAlchemy Session
     """
     storage.close()
+
+
+@app.route('/2-hbnb')
+def hbnb_filters(the_id=None):
+    """
+    handles request to custom template with states, cities & amentities
+    """
+    states = dict([state.name, state] for state in state_objs)
+    amens = storage.all('Amenity').values()
+    places = storage.all('Place').values()
+    users = dict([user.id, "{} {}".format(user.first_name, user.last_name)]
+                  for user in storage.all('User').values())
+    return render_template('2-hbnb.html',
+                           cache_id=uuid.uuid4(),
+                           states=states,
+                           amens=amens,
+                           places=places,
+                           users=users)
+
+if __name__ == "__main__":
+    """
+    MAIN Flask App """
+    app.run(host=host, port=port)
